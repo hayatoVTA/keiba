@@ -36,14 +36,14 @@ async def verify_token(
 ) -> dict:
     """Supabase JWTトークンを検証"""
     token = credentials.credentials
-    
+
     if not settings.SUPABASE_JWT_SECRET:
         logger.warning("SUPABASE_JWT_SECRET is not configured")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Authentication is not configured"
         )
-    
+
     try:
         payload = jwt.decode(
             token,
@@ -66,13 +66,13 @@ async def get_current_user(
 ) -> dict:
     """現在のユーザー情報を取得"""
     user_id = token_payload.get("sub")
-    
+
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token payload"
         )
-    
+
     try:
         result = supabase.table("users").select("*").eq("id", user_id).single().execute()
         if not result.data:

@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { session } } = await supabase.auth.getSession()
       setSession(session)
       setUser(session?.user ?? null)
-      
+
       if (session?.user) {
         // ユーザー情報を取得
         try {
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       }
-      
+
       setIsLoading(false)
     }
 
@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (_event, session) => {
         setSession(session)
         setUser(session?.user ?? null)
-        
+
         if (!session) {
           logout()
         }

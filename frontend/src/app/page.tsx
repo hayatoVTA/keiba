@@ -11,12 +11,12 @@ export default function Home() {
       <section className="relative py-20 px-4 overflow-hidden">
         {/* 背景パターン */}
         <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-5" />
-        
+
         <div className="container mx-auto text-center relative z-10">
           <Badge className="mb-6 bg-yellow-500/20 text-yellow-300 border-yellow-500/30 px-4 py-2 text-sm">
             🎉 新規登録で10,000コインプレゼント
           </Badge>
-          
+
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-amber-100 mb-6 leading-tight">
             実際のレースで
             <br />
@@ -24,26 +24,26 @@ export default function Home() {
               予想の腕を試せ
             </span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-amber-300/80 mb-8 max-w-2xl mx-auto">
             競馬チャンプは、JRAの実際のレースデータを使った無料の競馬予想ゲーム。
             <br className="hidden md:block" />
             コインを賭けて予想し、的中すればコインが増える！
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-gradient-to-r from-yellow-500 to-amber-500 text-amber-950 font-bold text-lg px-8 py-6 hover:from-yellow-400 hover:to-amber-400 shadow-lg shadow-amber-500/25"
               >
                 今すぐ無料で始める
               </Button>
             </Link>
             <Link href="/races">
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="border-amber-400 text-amber-200 hover:bg-amber-800/50 text-lg px-8 py-6"
               >
                 レースを見る
@@ -59,7 +59,7 @@ export default function Home() {
           <h2 className="text-3xl font-serif font-bold text-center text-amber-100 mb-12">
             競馬チャンプの特徴
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="bg-amber-950/50 border-amber-800/50 hover:border-amber-600/50 transition-colors">
               <CardHeader>
@@ -109,7 +109,7 @@ export default function Home() {
           <p className="text-center text-amber-400/70 mb-12">
             実際の競馬と同じ予想方法に対応
           </p>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
               { name: "単勝", desc: "1着を予想", difficulty: "易" },
@@ -123,8 +123,8 @@ export default function Home() {
                 <CardContent className="pt-6">
                   <h3 className="font-bold text-amber-100 text-lg mb-1">{type.name}</h3>
                   <p className="text-sm text-amber-400/70 mb-2">{type.desc}</p>
-                  <Badge 
-                    variant="outline" 
+                  <Badge
+                    variant="outline"
                     className={`
                       ${type.difficulty === "易" ? "border-green-500 text-green-400" : ""}
                       ${type.difficulty === "中" ? "border-yellow-500 text-yellow-400" : ""}
@@ -147,7 +147,7 @@ export default function Home() {
           <h2 className="text-3xl font-serif font-bold text-center text-amber-100 mb-12">
             コインの獲得方法
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="bg-gradient-to-br from-amber-950/80 to-amber-900/50 border-amber-700/50">
               <CardContent className="pt-6">
@@ -198,8 +198,8 @@ export default function Home() {
             登録は無料。メールアドレスまたはSNSアカウントで簡単登録。
           </p>
           <Link href="/register">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="bg-gradient-to-r from-yellow-500 to-amber-500 text-amber-950 font-bold text-lg px-12 py-6 hover:from-yellow-400 hover:to-amber-400 shadow-lg shadow-amber-500/25"
             >
               無料登録して10,000コインもらう

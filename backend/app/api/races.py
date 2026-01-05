@@ -29,7 +29,7 @@ async def get_races(
             "*, horses(*)",
             count="exact"
         )
-        
+
         # フィルター適用
         if race_date:
             query = query.eq("date", race_date)
@@ -37,16 +37,16 @@ async def get_races(
             query = query.eq("venue", venue)
         if status:
             query = query.eq("status", status)
-        
+
         # ページネーション
         offset = (page - 1) * limit
         query = query.order("start_time").range(offset, offset + limit - 1)
-        
+
         result = query.execute()
-        
+
         total = result.count or 0
         total_pages = (total + limit - 1) // limit
-        
+
         return RaceListResponse(
             races=result.data or [],
             pagination={
@@ -56,7 +56,7 @@ async def get_races(
                 "totalPages": total_pages
             }
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to get races: {e}")
         raise HTTPException(
@@ -76,15 +76,15 @@ async def get_race(
         result = supabase.table("races").select(
             "*, horses(*), race_results(*)"
         ).eq("id", race_id).single().execute()
-        
+
         if not result.data:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Race not found"
             )
-        
+
         return RaceDetailResponse(race=result.data)
-        
+
     except HTTPException:
         raise
     except Exception as e:

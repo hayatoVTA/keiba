@@ -27,22 +27,22 @@ export function Header() {
 
         {/* ナビゲーション（デスクトップ） */}
         <nav className="hidden md:flex items-center space-x-6">
-          <Link 
-            href="/races" 
+          <Link
+            href="/races"
             className="text-amber-200/80 hover:text-amber-100 transition-colors font-medium"
           >
             レース一覧
           </Link>
-          <Link 
-            href="/ranking" 
+          <Link
+            href="/ranking"
             className="text-amber-200/80 hover:text-amber-100 transition-colors font-medium flex items-center gap-1"
           >
             <Trophy className="h-4 w-4" />
             ランキング
           </Link>
           {user && (
-            <Link 
-              href="/bets" 
+            <Link
+              href="/bets"
               className="text-amber-200/80 hover:text-amber-100 transition-colors font-medium"
             >
               予想履歴

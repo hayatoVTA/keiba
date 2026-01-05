@@ -33,27 +33,27 @@ async def get_transactions(
 ):
     """コイン取引履歴取得"""
     user_id = current_user["id"]
-    
+
     try:
         query = supabase.table("coin_transactions").select(
             "*", count="exact"
         ).eq("user_id", user_id)
-        
+
         if type:
             query = query.eq("type", type)
         if start_date:
             query = query.gte("created_at", f"{start_date}T00:00:00Z")
         if end_date:
             query = query.lte("created_at", f"{end_date}T23:59:59Z")
-        
+
         offset = (page - 1) * limit
         query = query.order("created_at", desc=True).range(offset, offset + limit - 1)
-        
+
         result = query.execute()
-        
+
         total = result.count or 0
         total_pages = (total + limit - 1) // limit
-        
+
         return {
             "transactions": result.data or [],
             "pagination": {
@@ -63,7 +63,7 @@ async def get_transactions(
                 "totalPages": total_pages
             }
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to get transactions: {e}")
         raise HTTPException(
@@ -92,20 +92,20 @@ async def claim_ad_bonus(
     """広告視聴ボーナス獲得"""
     user_id = current_user["id"]
     current_coins = current_user.get("coins", 0)
-    
+
     try:
         now = datetime.now(timezone.utc)
         today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        
+
         # 今日の広告視聴回数を確認
         ad_views = supabase.table("advertisement_views").select(
             "id", count="exact"
         ).eq("user_id", user_id).gte(
             "viewed_at", today_start.isoformat()
         ).execute()
-        
+
         view_count = ad_views.count or 0
-        
+
         if view_count >= settings.AD_VIEW_MAX_PER_DAY:
             return {
                 "message": f"Daily ad view limit reached ({settings.AD_VIEW_MAX_PER_DAY})",
@@ -113,10 +113,10 @@ async def claim_ad_bonus(
                 "bonus_claimed": False,
                 "remaining_views": 0
             }
-        
+
         bonus = settings.AD_VIEW_COINS
         new_coins = current_coins + bonus
-        
+
         # 広告視聴履歴を記録
         supabase.table("advertisement_views").insert({
             "user_id": user_id,
@@ -124,12 +124,12 @@ async def claim_ad_bonus(
             "coins_earned": bonus,
             "viewed_at": now.isoformat()
         }).execute()
-        
+
         # コインを更新
         supabase.table("users").update({
             "coins": new_coins
         }).eq("id", user_id).execute()
-        
+
         # コイン取引履歴を記録
         transaction = {
             "user_id": user_id,
@@ -140,11 +140,11 @@ async def claim_ad_bonus(
             "created_at": now.isoformat()
         }
         supabase.table("coin_transactions").insert(transaction).execute()
-        
+
         remaining_views = settings.AD_VIEW_MAX_PER_DAY - view_count - 1
-        
+
         logger.info(f"Ad bonus claimed: user={user_id}, bonus={bonus}")
-        
+
         return {
             "message": "広告視聴ボーナスを獲得しました",
             "coins": new_coins,
@@ -152,7 +152,7 @@ async def claim_ad_bonus(
             "bonus_claimed": True,
             "remaining_views": remaining_views
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to claim ad bonus: {e}")
         raise HTTPException(

@@ -6,10 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Calendar, 
-  MapPin, 
-  Clock, 
+import {
+  Calendar,
+  MapPin,
+  Clock,
   ChevronRight,
   Filter,
   Trophy
@@ -139,8 +139,8 @@ export default function RacesPage() {
             <Button
               size="sm"
               variant={selectedVenue === null ? 'default' : 'outline'}
-              className={selectedVenue === null 
-                ? 'bg-amber-600 text-amber-100' 
+              className={selectedVenue === null
+                ? 'bg-amber-600 text-amber-100'
                 : 'border-amber-700 text-amber-200 hover:bg-amber-800/50'
               }
               onClick={() => setSelectedVenue(null)}
@@ -152,8 +152,8 @@ export default function RacesPage() {
                 key={venue}
                 size="sm"
                 variant={selectedVenue === venue ? 'default' : 'outline'}
-                className={selectedVenue === venue 
-                  ? 'bg-amber-600 text-amber-100' 
+                className={selectedVenue === venue
+                  ? 'bg-amber-600 text-amber-100'
                   : 'border-amber-700 text-amber-200 hover:bg-amber-800/50'
                 }
                 onClick={() => setSelectedVenue(venue)}
@@ -199,7 +199,7 @@ export default function RacesPage() {
                       <div className="w-12 h-12 rounded-full bg-amber-800/50 flex items-center justify-center">
                         <span className="text-lg font-bold text-amber-100">{race.raceNumber}R</span>
                       </div>
-                      
+
                       {/* レース情報 */}
                       <div>
                         <div className="flex items-center gap-2 mb-1">

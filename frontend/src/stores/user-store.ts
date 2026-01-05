@@ -31,24 +31,24 @@ export const useUserStore = create<UserState>()(
       user: null,
       isLoading: true,
       isAuthenticated: false,
-      
-      setUser: (user) => set({ 
-        user, 
+
+      setUser: (user) => set({
+        user,
         isAuthenticated: !!user,
-        isLoading: false 
+        isLoading: false
       }),
-      
+
       updateCoins: (coins) => set((state) => ({
         user: state.user ? { ...state.user, coins } : null
       })),
-      
+
       updateStats: (stats) => set((state) => ({
         user: state.user ? { ...state.user, ...stats } : null
       })),
-      
-      logout: () => set({ 
-        user: null, 
-        isAuthenticated: false 
+
+      logout: () => set({
+        user: null,
+        isAuthenticated: false
       }),
     }),
     {

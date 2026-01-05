@@ -64,11 +64,11 @@ export const raceApi = {
     if (params?.status) searchParams.set('status', params.status)
     if (params?.page) searchParams.set('page', params.page.toString())
     if (params?.limit) searchParams.set('limit', params.limit.toString())
-    
+
     return apiClient(`/races?${searchParams.toString()}`, { token })
   },
-  
-  getRace: (id: string, token?: string) => 
+
+  getRace: (id: string, token?: string) =>
     apiClient(`/races/${id}`, { token }),
 }
 
@@ -76,26 +76,26 @@ export const raceApi = {
 export const betApi = {
   createBet: (data: { raceId: string; betType: string; selections: number[]; amount: number }, token?: string) =>
     apiClient('/bets', { method: 'POST', body: { race_id: data.raceId, bet_type: data.betType, selections: data.selections, amount: data.amount }, token }),
-    
+
   getBets: (params?: { status?: string; raceId?: string; page?: number; limit?: number }, token?: string) => {
     const searchParams = new URLSearchParams()
     if (params?.status) searchParams.set('status', params.status)
     if (params?.raceId) searchParams.set('race_id', params.raceId)
     if (params?.page) searchParams.set('page', params.page.toString())
     if (params?.limit) searchParams.set('limit', params.limit.toString())
-    
+
     return apiClient(`/bets?${searchParams.toString()}`, { token })
   },
-  
-  getBet: (id: string, token?: string) => 
+
+  getBet: (id: string, token?: string) =>
     apiClient(`/bets/${id}`, { token }),
 }
 
 // コイン関連API
 export const coinApi = {
-  getBalance: (token?: string) => 
+  getBalance: (token?: string) =>
     apiClient('/coins/balance', { token }),
-    
+
   getTransactions: (params?: { type?: string; startDate?: string; endDate?: string; page?: number; limit?: number }, token?: string) => {
     const searchParams = new URLSearchParams()
     if (params?.type) searchParams.set('type', params.type)
@@ -103,25 +103,25 @@ export const coinApi = {
     if (params?.endDate) searchParams.set('end_date', params.endDate)
     if (params?.page) searchParams.set('page', params.page.toString())
     if (params?.limit) searchParams.set('limit', params.limit.toString())
-    
+
     return apiClient(`/coins/transactions?${searchParams.toString()}`, { token })
   },
-  
+
   claimDailyBonus: (token?: string) =>
     apiClient('/coins/bonus/daily', { method: 'POST', token }),
-    
+
   claimAdBonus: (token?: string) =>
     apiClient('/coins/bonus/ad', { method: 'POST', token }),
 }
 
 // ユーザー関連API
 export const userApi = {
-  getProfile: (token?: string) => 
+  getProfile: (token?: string) =>
     apiClient('/user/profile', { token }),
-    
+
   claimRegisterBonus: (token?: string) =>
     apiClient('/user/register-bonus', { method: 'POST', token }),
-    
+
   claimLoginBonus: (token?: string) =>
     apiClient('/user/login-bonus', { method: 'POST', token }),
 }
@@ -132,24 +132,24 @@ export const rankingApi = {
     const searchParams = new URLSearchParams()
     if (params?.page) searchParams.set('page', params.page.toString())
     if (params?.limit) searchParams.set('limit', params.limit.toString())
-    
+
     return apiClient(`/ranking/assets?${searchParams.toString()}`, { token })
   },
-  
+
   getProfitRanking: (params?: { period?: string; page?: number; limit?: number }, token?: string) => {
     const searchParams = new URLSearchParams()
     if (params?.period) searchParams.set('period', params.period)
     if (params?.page) searchParams.set('page', params.page.toString())
     if (params?.limit) searchParams.set('limit', params.limit.toString())
-    
+
     return apiClient(`/ranking/profit?${searchParams.toString()}`, { token })
   },
-  
+
   getWinRateRanking: (params?: { page?: number; limit?: number }, token?: string) => {
     const searchParams = new URLSearchParams()
     if (params?.page) searchParams.set('page', params.page.toString())
     if (params?.limit) searchParams.set('limit', params.limit.toString())
-    
+
     return apiClient(`/ranking/win-rate?${searchParams.toString()}`, { token })
   },
 }

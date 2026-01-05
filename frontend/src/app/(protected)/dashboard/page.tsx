@@ -8,11 +8,11 @@ import { userApi } from '@/lib/api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Coins, 
-  Target, 
-  TrendingUp, 
-  Trophy, 
+import {
+  Coins,
+  Target,
+  TrendingUp,
+  Trophy,
   Gift,
   ChevronRight,
   Calendar,
@@ -32,7 +32,7 @@ export default function DashboardPage() {
   // ログインボーナスを取得
   const claimLoginBonus = async () => {
     if (!session?.access_token) return
-    
+
     setLoginBonusLoading(true)
     try {
       const result = await userApi.claimLoginBonus(session.access_token) as {
@@ -41,7 +41,7 @@ export default function DashboardPage() {
         consecutive_days: number
         coins: number
       }
-      
+
       if (result.bonus_claimed) {
         setLoginBonusResult({
           bonus: result.bonus,
@@ -221,7 +221,7 @@ export default function DashboardPage() {
                 現在 <span className="font-bold text-yellow-400">{user?.consecutiveLoginDays || 0}日連続</span> ログイン中
               </p>
               <p className="text-sm text-amber-400/70 mt-1">
-                {user?.consecutiveLoginDays && user.consecutiveLoginDays >= 7 
+                {user?.consecutiveLoginDays && user.consecutiveLoginDays >= 7
                   ? user.consecutiveLoginDays >= 14
                     ? user.consecutiveLoginDays >= 30
                       ? '30日連続達成！最大ボーナス獲得中 🎉'
@@ -237,11 +237,11 @@ export default function DashboardPage() {
               </Badge>
             </div>
           </div>
-          
+
           {/* 連続ログインの進捗 */}
           <div className="mt-4 grid grid-cols-4 gap-2">
             {[3, 7, 14, 30].map((day) => (
-              <div 
+              <div
                 key={day}
                 className={`p-3 rounded-lg text-center ${
                   (user?.consecutiveLoginDays || 0) >= day

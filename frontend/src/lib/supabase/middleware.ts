@@ -34,7 +34,7 @@ export async function updateSession(request: NextRequest) {
 
   // 認証が必要なルートの保護
   const protectedRoutes = ['/dashboard', '/bets', '/profile', '/ranking']
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = protectedRoutes.some(route =>
     request.nextUrl.pathname.startsWith(route)
   )
 

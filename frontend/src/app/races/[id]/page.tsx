@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -17,9 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { 
-  MapPin, 
-  Clock, 
+import {
+  MapPin,
+  Clock,
   Trophy,
   Coins,
   CheckCircle,
@@ -65,7 +65,7 @@ export default function RaceDetailPage() {
   const router = useRouter()
   const { user: authUser, session } = useAuth()
   const { user, updateCoins } = useUserStore()
-  
+
   const [selectedBetType, setSelectedBetType] = useState('win')
   const [selectedHorses, setSelectedHorses] = useState<number[]>([])
   const [betAmount, setBetAmount] = useState(100)
@@ -90,7 +90,7 @@ export default function RaceDetailPage() {
     if (selectedHorses.length === 0) return 0
     const horse = race.horses.find(h => h.number === selectedHorses[0])
     if (!horse) return 0
-    
+
     if (selectedBetType === 'place') {
       return Math.max(1.1, horse.odds / 3)
     }
@@ -109,12 +109,12 @@ export default function RaceDetailPage() {
     if (betAmount < 10 || betAmount > (user?.coins || 0)) return
 
     setIsSubmitting(true)
-    
+
     // 実際はAPIを呼び出す
     try {
       // 仮の成功処理
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       const newCoins = (user?.coins || 0) - betAmount
       updateCoins(newCoins)
       setBetSuccess(true)
@@ -127,7 +127,7 @@ export default function RaceDetailPage() {
 
   if (betSuccess) {
     const selectedHorse = race.horses.find(h => h.number === selectedHorses[0])
-    
+
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-lg mx-auto bg-amber-950/50 border-amber-800/50">
@@ -139,7 +139,7 @@ export default function RaceDetailPage() {
             <p className="text-amber-400/70 mb-6">
               レース結果をお楽しみに
             </p>
-            
+
             <div className="bg-amber-900/30 rounded-lg p-4 mb-6 text-left">
               <div className="flex justify-between mb-2">
                 <span className="text-amber-400/70">レース</span>
@@ -162,7 +162,7 @@ export default function RaceDetailPage() {
                 <span className="text-yellow-400">{getSelectedOdds().toFixed(1)}倍</span>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <Button
                 variant="outline"
@@ -255,7 +255,7 @@ export default function RaceDetailPage() {
                 </TableHeader>
                 <TableBody>
                   {race.horses.map(horse => (
-                    <TableRow 
+                    <TableRow
                       key={horse.number}
                       className={`border-amber-800/50 cursor-pointer transition-colors ${
                         selectedHorses.includes(horse.number)
@@ -282,7 +282,7 @@ export default function RaceDetailPage() {
                       <TableCell className="text-amber-300">{horse.jockey}</TableCell>
                       <TableCell className="text-right">
                         <span className={`font-bold ${
-                          horse.odds < 5 ? 'text-yellow-400' : 
+                          horse.odds < 5 ? 'text-yellow-400' :
                           horse.odds < 10 ? 'text-amber-300' : 'text-amber-400/70'
                         }`}>
                           {horse.odds.toFixed(1)}
@@ -324,8 +324,8 @@ export default function RaceDetailPage() {
                 }}>
                   <TabsList className="w-full bg-amber-900/50">
                     {BET_TYPES.map(bt => (
-                      <TabsTrigger 
-                        key={bt.id} 
+                      <TabsTrigger
+                        key={bt.id}
                         value={bt.id}
                         className="flex-1 data-[state=active]:bg-amber-700"
                       >
