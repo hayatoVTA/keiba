@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Docker用のstandalone出力
   output: "standalone",
-  
+
   // 画像最適化設定
   images: {
     remotePatterns: [
@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  
+
   // 環境変数の公開
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
