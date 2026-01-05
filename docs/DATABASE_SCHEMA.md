@@ -2,7 +2,13 @@
 
 ## スキーマ概要
 
-PostgreSQLを使用し、Prisma ORMで管理します。
+PostgreSQL（Supabase）を使用します。
+
+**注意**: このドキュメントではPrismaスキーマ形式でテーブル定義を記載していますが、実際の実装では：
+- **Next.js（フロントエンド）**: Prisma Client (TypeScript) を使用（必要に応じて）
+- **FastAPI（バックエンド）**: Supabase Python SDKを使用してデータベースにアクセス
+
+Prismaスキーマは型定義とマイグレーション管理のためのものです。
 
 ## テーブル一覧
 
@@ -133,7 +139,7 @@ model RaceResult {
   second    Int
   third     Int
   finishTime String?
-  payout    Json     // { win: number, place: number[], exacta: number, wide: number }
+  payout    Json     // { win: number, place: number[], exacta: number, wide: number, trio: number, trifecta: number }
   createdAt DateTime @default(now())
 
   // Relations
@@ -152,7 +158,7 @@ model Bet {
   id          String   @id @default(uuid())
   userId      String
   raceId      String
-  betType     String   // 'win' | 'place' | 'exacta' | 'wide'
+  betType     String   // 'win' | 'place' | 'exacta' | 'wide' | 'trio' | 'trifecta'
   selections  Int[]
   amount      Int
   odds        Float
@@ -376,4 +382,156 @@ model AdvertisementView {
 - **自動バックアップ**: Supabase/Neonの自動バックアップ機能を使用
 - **バックアップ頻度**: 日次
 - **保持期間**: 30日間
+
+## 将来実装予定テーブル（ゲーミフィケーション）
+
+製品版以降で実装予定のテーブル設計です。MVPでは実装しません。
+
+### UserLevel（ユーザーレベル）
+
+```prisma
+// 将来実装予定
+model UserLevel {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  level           Int      @default(1)
+  currentExp      Int      @default(0)
+  totalExp        BigInt   @default(0)
+  expToNextLevel  Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([level])
+}
+```
+
+### Club（クラブ）
+
+```prisma
+// 将来実装予定
+model Club {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  icon            String?
+  masterId        String
+  level           Int      @default(1)
+  exp             BigInt   @default(0)
+  totalAssets     BigInt   @default(0)
+  totalProfit     BigInt   @default(0)
+  averageWinRate  Float    @default(0)
+  maxMembers      Int      @default(10)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  members         ClubMember[]
+  missions        ClubMission[]
+  rankings        ClubRanking[]
+
+  @@index([masterId])
+  @@index([level])
+}
+```
+
+### ClubMember（クラブメンバー）
+
+```prisma
+// 将来実装予定
+model ClubMember {
+  id          String   @id @default(uuid())
+  clubId      String
+  userId      String
+  role        String   // 'master' | 'subMaster' | 'member'
+  contribution BigInt  @default(0)
+  joinedAt    DateTime @default(now())
+
+  // Relations
+  club        Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([clubId, userId])
+  @@index([clubId])
+  @@index([userId])
+}
+```
+
+### ClubMission（クラブミッション）
+
+```prisma
+// 将来実装予定
+model ClubMission {
+  id          String   @id @default(uuid())
+  clubId      String
+  type        String   // 'bets' | 'wins' | 'profit' | 'ranking'
+  target      BigInt
+  current     BigInt   @default(0)
+  reward      Json     // { coins: number, exp: number, badge?: string }
+  status      String   @default("active") // 'active' | 'completed' | 'expired'
+  deadline    DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  club        Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  @@index([clubId])
+  @@index([status])
+}
+```
+
+### Season（シーズン）
+
+```prisma
+// 将来実装予定
+model Season {
+  id          String   @id @default(uuid())
+  number      Int      @unique
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("upcoming") // 'upcoming' | 'active' | 'ended'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  rankings    SeasonRanking[]
+
+  @@index([status])
+  @@index([startDate])
+  @@index([endDate])
+}
+```
+
+### SeasonRanking（シーズンランキング）
+
+```prisma
+// 将来実装予定
+model SeasonRanking {
+  id          String   @id @default(uuid())
+  seasonId    String
+  userId      String
+  totalAssets BigInt   @default(0)
+  netProfit   BigInt   @default(0)
+  winRate     Float    @default(0)
+  totalBets   Int      @default(0)
+  rank        Int?
+  reward      Json?    // { coins: number, badges: string[], avatar?: string }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  season      Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([seasonId, userId])
+  @@index([seasonId])
+  @@index([userId])
+  @@index([rank])
+}
+```
 

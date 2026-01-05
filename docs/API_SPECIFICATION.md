@@ -268,6 +268,56 @@ const { data: { user } } = await supabase.auth.getUser()
 }
 ```
 
+**betTypeの種類:**
+- `win`: 単勝（1頭選択）
+- `place`: 複勝（1頭選択）
+- `exacta`: 馬連（2頭選択、順番は問わない）
+- `wide`: ワイド（2頭選択、順番は問わない）
+- `trio`: 3連複（3頭選択、順番は問わない）
+- `trifecta`: 3連単（3頭選択、1着・2着・3着の順番指定）
+
+**リクエスト例:**
+
+単勝:
+```json
+{
+  "raceId": "uuid",
+  "betType": "win",
+  "selections": [1],
+  "amount": 100
+}
+```
+
+馬連:
+```json
+{
+  "raceId": "uuid",
+  "betType": "exacta",
+  "selections": [1, 2],
+  "amount": 100
+}
+```
+
+3連複:
+```json
+{
+  "raceId": "uuid",
+  "betType": "trio",
+  "selections": [1, 2, 3],
+  "amount": 100
+}
+```
+
+3連単:
+```json
+{
+  "raceId": "uuid",
+  "betType": "trifecta",
+  "selections": [1, 2, 3],
+  "amount": 100
+}
+```
+
 **レスポンス:**
 ```json
 {

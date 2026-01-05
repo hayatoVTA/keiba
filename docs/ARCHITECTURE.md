@@ -125,13 +125,16 @@ graph TB
   - Next.jsクライアントから直接利用
   - JWTトークンによる認証
 
-#### Prisma
-- **理由**: 型安全なORM、マイグレーション管理
+#### Supabase Python SDK
+- **理由**: Supabaseとの統合、型安全なデータアクセス
 - **機能**:
-  - スキーマ定義
-  - マイグレーション
-  - クライアント生成（TypeScript）
-- **注意**: FastAPIからはPrisma Client (Python) または直接SQLを使用
+  - データベースクエリ
+  - リアルタイムサブスクリプション
+  - ストレージアクセス
+- **FastAPIでの使用**:
+  - Supabase Python SDKを使用してデータベースにアクセス
+  - 非同期処理対応
+  - 型ヒントによる型安全性
 
 #### PostgreSQL (Supabase)
 - **理由**: リレーショナルデータ、ACID準拠、高パフォーマンス、Supabase統合
