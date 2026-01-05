@@ -1,0 +1,259 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ユーザー
+model User {
+  id                   String    @id @default(uuid())
+  email                String?   @unique
+  emailVerified        DateTime? @map("email_verified")
+  displayName          String?   @map("display_name")
+  avatar               String?
+  coins                Int       @default(10000)
+  totalBets            Int       @default(0) @map("total_bets")
+  totalWins            Int       @default(0) @map("total_wins")
+  totalEarnings        BigInt    @default(0) @map("total_earnings")
+  totalSpent           BigInt    @default(0) @map("total_spent")
+  winRate              Float     @default(0) @map("win_rate")
+  rank                 Int?
+  isPremium            Boolean   @default(false) @map("is_premium")
+  premiumExpiresAt     DateTime? @map("premium_expires_at")
+  consecutiveLoginDays Int       @default(0) @map("consecutive_login_days")
+  lastLoginAt          DateTime? @map("last_login_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  bets                 Bet[]
+  coinTransactions     CoinTransaction[]
+  badges               UserBadge[]
+  premiumSubscription  PremiumSubscription?
+  advertisementViews   AdvertisementView[]
+
+  @@index([email])
+  @@index([coins])
+  @@index([rank])
+  @@map("users")
+}
+
+// レース
+model Race {
+  id               String    @id @default(uuid())
+  date             DateTime
+  venue            String
+  raceNumber       Int       @map("race_number")
+  raceName         String    @map("race_name")
+  grade            String?
+  distance         Int
+  surface          String    // 'turf' | 'dirt'
+  condition        String
+  weather          String?
+  status           String    @default("upcoming") // 'upcoming' | 'betting' | 'running' | 'finished' | 'cancelled'
+  startTime        DateTime  @map("start_time")
+  bettingStartTime DateTime  @map("betting_start_time")
+  bettingEndTime   DateTime  @map("betting_end_time")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  horses           Horse[]
+  bets             Bet[]
+  result           RaceResult?
+
+  @@unique([date, venue, raceNumber])
+  @@index([date])
+  @@index([status])
+  @@index([startTime])
+  @@map("races")
+}
+
+// 出走馬
+model Horse {
+  id              String   @id @default(uuid())
+  raceId          String   @map("race_id")
+  number          Int
+  name            String
+  jockey          String
+  trainer         String
+  weight          Float
+  odds            Float
+  popularity      Int
+  age             Int
+  sex             String   // 'male' | 'female'
+  previousResults Int[]    @default([]) @map("previous_results")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  race            Race     @relation(fields: [raceId], references: [id], onDelete: Cascade)
+
+  @@unique([raceId, number])
+  @@index([raceId])
+  @@map("horses")
+}
+
+// レース結果
+model RaceResult {
+  id         String   @id @default(uuid())
+  raceId     String   @unique @map("race_id")
+  first      Int
+  second     Int
+  third      Int
+  finishTime String?  @map("finish_time")
+  payout     Json     // { win: number, place: number[], exacta: number, wide: number, trio: number, trifecta: number }
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  race       Race     @relation(fields: [raceId], references: [id], onDelete: Cascade)
+
+  @@index([raceId])
+  @@map("race_results")
+}
+
+// 予想
+model Bet {
+  id         String    @id @default(uuid())
+  userId     String    @map("user_id")
+  raceId     String    @map("race_id")
+  betType    String    @map("bet_type") // 'win' | 'place' | 'exacta' | 'wide' | 'trio' | 'trifecta'
+  selections Int[]
+  amount     Int
+  odds       Float
+  status     String    @default("pending") // 'pending' | 'won' | 'lost' | 'refunded'
+  payout     BigInt?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  settledAt  DateTime? @map("settled_at")
+
+  // Relations
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  race       Race      @relation(fields: [raceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([raceId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("bets")
+}
+
+// コイン取引履歴
+model CoinTransaction {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String   // 'earn' | 'spend' | 'purchase' | 'bonus' | 'refund'
+  amount    BigInt
+  balance   BigInt
+  reason    String
+  metadata  Json?    // 追加情報（レースID、予想ID等）
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("coin_transactions")
+}
+
+// ランキング
+model Ranking {
+  id              String   @id @default(uuid())
+  userId          String   @unique @map("user_id")
+  totalAssets     BigInt   @default(0) @map("total_assets")
+  netProfit       BigInt   @default(0) @map("net_profit")
+  winRate         Float    @default(0) @map("win_rate")
+  weeklyProfit    BigInt   @default(0) @map("weekly_profit")
+  monthlyProfit   BigInt   @default(0) @map("monthly_profit")
+  totalAssetsRank Int?     @map("total_assets_rank")
+  netProfitRank   Int?     @map("net_profit_rank")
+  winRateRank     Int?     @map("win_rate_rank")
+  weeklyRank      Int?     @map("weekly_rank")
+  monthlyRank     Int?     @map("monthly_rank")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([totalAssets])
+  @@index([netProfit])
+  @@index([winRate])
+  @@index([weeklyProfit])
+  @@index([monthlyProfit])
+  @@map("rankings")
+}
+
+// バッジマスター
+model Badge {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String
+  icon        String
+  category    String      // 'ranking' | 'achievement' | 'premium'
+  condition   Json?       // 獲得条件
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  // Relations
+  userBadges  UserBadge[]
+
+  @@index([category])
+  @@map("badges")
+}
+
+// ユーザーバッジ
+model UserBadge {
+  id       String   @id @default(uuid())
+  userId   String   @map("user_id")
+  badgeId  String   @map("badge_id")
+  earnedAt DateTime @default(now()) @map("earned_at")
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@map("user_badges")
+}
+
+// プレミアムサブスクリプション
+model PremiumSubscription {
+  id                   String    @id @default(uuid())
+  userId               String    @unique @map("user_id")
+  planType             String    @map("plan_type") // 'monthly' | 'yearly'
+  status               String    // 'active' | 'cancelled' | 'expired'
+  startedAt            DateTime  @default(now()) @map("started_at")
+  expiresAt            DateTime  @map("expires_at")
+  cancelledAt          DateTime? @map("cancelled_at")
+  stripeSubscriptionId String?   @unique @map("stripe_subscription_id")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("premium_subscriptions")
+}
+
+// 広告視聴履歴
+model AdvertisementView {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  adType      String   @map("ad_type") // 'video' | 'banner'
+  coinsEarned Int      @default(50) @map("coins_earned")
+  viewedAt    DateTime @default(now()) @map("viewed_at")
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([viewedAt])
+  @@map("advertisement_views")
+}
