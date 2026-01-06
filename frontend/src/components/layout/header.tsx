@@ -113,18 +113,11 @@ export function Header() {
               </div>
             </>
           ) : (
-            <div className="flex items-center space-x-2">
-              <Link href="/login">
-                <Button variant="ghost" className="text-amber-200 hover:text-amber-100 hover:bg-amber-800/50">
-                  ログイン
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button className="bg-gradient-to-r from-yellow-500 to-amber-500 text-amber-950 font-bold hover:from-yellow-400 hover:to-amber-400">
-                  無料登録
-                </Button>
-              </Link>
-            </div>
+            <Link href="/login">
+              <Button className="bg-gradient-to-r from-yellow-500 to-amber-500 text-amber-950 font-bold hover:from-yellow-400 hover:to-amber-400">
+                ログイン
+              </Button>
+            </Link>
           )}
 
           {/* モバイルメニューボタン */}

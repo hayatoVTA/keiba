@@ -99,6 +99,13 @@ prisma-migrate:
 prisma-generate:
 	cd frontend && npx prisma generate
 
+# データベース
+seed:
+	./scripts/seed-db.sh
+
+seed-backend:
+	cd backend && python -c "from app.services.seed_data import seed_races, seed_badges; seed_races(); seed_badges()"
+
 # テスト
 test-backend:
 	docker-compose -f docker-compose.dev.yml exec backend pytest

@@ -10,11 +10,8 @@ interface AuthContextType {
   user: SupabaseUser | null
   session: Session | null
   isLoading: boolean
-  signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, displayName: string) => Promise<void>
   signOut: () => Promise<void>
   signInWithGoogle: () => Promise<void>
-  signInWithTwitter: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -82,27 +79,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [supabase.auth, setStoreUser, logout])
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if (error) throw error
-  }
-
-  const signUp = async (email: string, password: string, displayName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          display_name: displayName,
-        },
-      },
-    })
-    if (error) throw error
-  }
-
   const signOut = async () => {
     await supabase.auth.signOut()
     logout()
@@ -118,27 +94,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
-  const signInWithTwitter = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-    if (error) throw error
-  }
-
   return (
     <AuthContext.Provider
       value={{
         user,
         session,
         isLoading,
-        signIn,
-        signUp,
         signOut,
         signInWithGoogle,
-        signInWithTwitter,
       }}
     >
       {children}

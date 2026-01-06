@@ -32,7 +32,7 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register">
+            <Link href="/login">
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-yellow-500 to-amber-500 text-amber-950 font-bold text-lg px-8 py-6 hover:from-yellow-400 hover:to-amber-400 shadow-lg shadow-amber-500/25"
@@ -195,14 +195,14 @@ export default function Home() {
             今すぐ始めて、予想の腕を試そう
           </h2>
           <p className="text-lg text-amber-300/80 mb-8">
-            登録は無料。メールアドレスまたはSNSアカウントで簡単登録。
+            登録は無料。Googleアカウントで簡単ログイン。
           </p>
-          <Link href="/register">
+          <Link href="/login">
             <Button
               size="lg"
               className="bg-gradient-to-r from-yellow-500 to-amber-500 text-amber-950 font-bold text-lg px-12 py-6 hover:from-yellow-400 hover:to-amber-400 shadow-lg shadow-amber-500/25"
             >
-              無料登録して10,000コインもらう
+              Googleでログインして10,000コインもらう
             </Button>
           </Link>
         </div>
